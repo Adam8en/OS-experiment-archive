@@ -36,7 +36,7 @@ void* Deposit(void* arg) {
     bank_account += operator->op_amount;
     printf("%s deposited %d, now the bank account has %d\n",
            operator->name, operator->op_amount, bank_account);
-    pthread_cond_broadcast(&Cond);
+    pthread_cond_broadcast(&Cond); // 存款后，唤醒所有条件变量，再次尝试取款
     pthread_mutex_unlock(&Lock);
 
     free(operator->name);
@@ -51,6 +51,7 @@ void* Withdraw(void* arg) {
     pthread_mutex_lock(&Lock);
 
     while(bank_account<operator->op_amount){
+        // 若此时银行余额小于取款操作钱款，则阻塞线程，释放锁。
         printf("%s is waiting to withdraw %d, but only %d is available, operation blockage.\n",
         operator->name,operator->op_amount,bank_account);
         pthread_cond_wait(&Cond,&Lock);
@@ -131,14 +132,14 @@ void operate(void) {
 
 int main() {
     pthread_mutex_init(&Lock, NULL); 
-    pthread_cond_init(&Cond,NULL);
+    pthread_cond_init(&Cond,NULL); // 初始化条件变量
 
     operate(); 
 
     printf("Final bank account: %d\n", bank_account); 
 
     pthread_mutex_destroy(&Lock); 
-    pthread_cond_destroy(&Cond);
+    pthread_cond_destroy(&Cond); // 销毁条件变量
 
     return 0;
 }
