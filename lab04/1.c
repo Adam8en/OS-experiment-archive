@@ -33,6 +33,7 @@ struct queue
 #define PROCESS_COUNT 20 // 设置进程总数为20
 struct queue queues[QUEUE_COUNT];
 int Time = 0; // 初始化全局时间为0，用于记录进程执行时消耗的时间
+double TotalWatingTime = 0; // 初始化全局总等待时间为0
 // sem_t semaphore_generator;
 sem_t semaphore_scheduler;
 pthread_mutex_t mutex;
@@ -57,6 +58,7 @@ int main(void)
     pthread_create(&generated_thread, NULL, generateProcess, NULL); // 调用生成器线程函数
 
     scheduler(); // 执行调度器
+    printf("The average of total wating time is: %g\n",TotalWatingTime/PROCESS_COUNT);
 
     pthread_join(generated_thread, NULL); // 等待生成器函数线程完成
 
@@ -204,6 +206,7 @@ void scheduler(){
                         // 如果队列已经无法下移，为了确保系统正确运行，则直接丢弃/释放进程。
                         printf("Scheduler: Process %s is running overtime, total waiting time = %d, aborted.\n",
                                tmp->pid, tmp->totalWaitTime);
+                        TotalWatingTime+=tmp->totalWaitTime;
                         free(tmp);
                         DisplayQueue();
                     }
@@ -213,6 +216,7 @@ void scheduler(){
                     // 进程执行完毕，释放进程
                     printf("Scheduler: Process %s finished, total waiting time = %d\n",
                            tmp->pid, tmp->totalWaitTime);
+                    TotalWatingTime+=tmp->totalWaitTime;
                     DisplayQueue();
                     free(tmp);
                 }
