@@ -1,4 +1,7 @@
 // 2.h
+# ifndef Q2_H
+# define Q2_H
+
 # include <stdio.h>
 # include <stdlib.h>
 # include <stdbool.h>
@@ -30,10 +33,6 @@ typedef struct PCBQueue {
     PCB* rear;
 } PCBQueue;
 
-Block *freeList = NULL;
-PCBQueue *pcbQueue = NULL;
-int global_block_id = 0; // 全局id计数器
-
 Block* create_block(int sizeK, int startAddr, bool status, int pid);
 PCB* create_pcb(int pid, int neededMem);
 PCBQueue* create_pcb_queue(void);
@@ -53,3 +52,5 @@ void test_case_a(void);
 void test_case_b(void);
 void delete_memory(void);
 void delete_queue(PCBQueue* Q);
+
+# endif

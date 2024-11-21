@@ -1,5 +1,9 @@
 // 2f.c
-# include "2.h"
+# include "q2.h"
+
+Block *freeList = NULL;
+PCBQueue *pcbQueue = NULL;
+int global_block_id = 1; // 全局id计数器
 
 /*创建一个内存块，确定内存块的：
     1.id 根据全局id计数器分配得到一个唯一id
@@ -75,6 +79,7 @@ void print_memory_state(void){
         }
         current = current->next;
     }
+    printf("\n");
 }
 
 /*
@@ -88,6 +93,7 @@ void print_pcb_queue(void){
         printf("#%d neededMem:%d\n",current->pid,current->neededMem);
         current = current->next;
     }
+    printf("\n");
 }
 
 /*
@@ -330,7 +336,7 @@ void test_case_b(void){
     pcbQueue = create_pcb_queue();
     srand(time(NULL));
 
-    for (int i = 0; i < PROCESS_NUM; i++)
+    for (int i = 1; i <= PROCESS_NUM; i++)
     {
         int neededMem = rand() % 6 + 3; // [3,8]
         enqueue(pcbQueue,create_pcb(i,neededMem));
@@ -343,7 +349,7 @@ void test_case_b(void){
         free(pcb);
     }
 
-    for (int i = 0; i < PROCESS_NUM; i++)
+    for (int i = 1; i <= PROCESS_NUM; i++)
     {
         free_memory(i);
     }
