@@ -1,3 +1,6 @@
+# ifndef Q1_H
+# define Q1_H
+
 # include <stdio.h>
 # include <stdlib.h>
 # include <stdbool.h>
@@ -47,3 +50,5 @@ void delete_memory(void);
 void delete_queue(PCBQueue* Q);
 void test_case_a(void);
 void test_case_b(void);
+
+# endif
